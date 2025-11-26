@@ -15,13 +15,13 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
   const [embedUrl, setEmbedUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedServer, setSelectedServer] = useState<string | null>(null);
+  const [selectedServerKey, setSelectedServerKey] = useState<string | null>(null);
 
-  const handleServerClick = async (option: StreamOption) => {
+  const handleServerClick = async (option: StreamOption, key: string) => {
     setIsLoading(true);
     setError(null);
     setEmbedUrl(null);
-    setSelectedServer(option.server);
+    setSelectedServerKey(key);
 
     try {
       const serverData = await getServerUrl(option.data_post, option.data_nume, option.data_type);
@@ -38,16 +38,28 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
     }
   };
 
-  const uniqueStreamOptions = useMemo(() => {
-    const seenServers = new Set<string>();
-    return streamOptions.filter(option => {
-      if (seenServers.has(option.server)) {
-        return false;
-      }
-      seenServers.add(option.server);
-      return true;
+  const serverCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    streamOptions.forEach(option => {
+      counts[option.server] = (counts[option.server] || 0) + 1;
     });
+    return counts;
   }, [streamOptions]);
+
+  const serverDisplayNames = useMemo(() => {
+    const names: Record<string, string> = {};
+    const counters: Record<string, number> = {};
+    streamOptions.forEach(option => {
+      const key = `${option.server}-${option.data_nume}`;
+      if (serverCounts[option.server] > 1) {
+        counters[option.server] = (counters[option.server] || 0) + 1;
+        names[key] = `${option.server} ${counters[option.server]}`;
+      } else {
+        names[key] = option.server;
+      }
+    });
+    return names;
+  }, [streamOptions, serverCounts]);
 
   return (
     <Card>
@@ -88,21 +100,24 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
         <div className="space-y-2">
             <p className="font-semibold text-sm">Available Servers:</p>
             <div className="flex flex-wrap gap-2">
-            {uniqueStreamOptions.map((option) => (
-                <Button
-                key={`${option.server}-${option.data_nume}`}
-                onClick={() => handleServerClick(option)}
-                disabled={isLoading && selectedServer === option.server}
-                variant={selectedServer === option.server ? 'default' : 'secondary'}
-                >
-                {isLoading && selectedServer === option.server ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                    <ServerIcon className="mr-2 h-4 w-4" />
-                )}
-                {option.server}
-                </Button>
-            ))}
+            {streamOptions.map((option) => {
+                const key = `${option.server}-${option.data_nume}`;
+                return (
+                    <Button
+                        key={key}
+                        onClick={() => handleServerClick(option, key)}
+                        disabled={isLoading && selectedServerKey === key}
+                        variant={selectedServerKey === key ? 'default' : 'secondary'}
+                    >
+                    {isLoading && selectedServerKey === key ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <ServerIcon className="mr-2 h-4 w-4" />
+                    )}
+                    {serverDisplayNames[key]}
+                    </Button>
+                )
+            })}
             </div>
         </div>
       </CardContent>
