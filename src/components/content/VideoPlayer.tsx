@@ -45,7 +45,7 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
       }
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred.';
-      setError(`Failed to load video. ${errorMessage}`);
+      setError(`Failed to load video from this server. Please try another one.`);
       console.error(e);
     } finally {
       setIsLoading(false);
@@ -63,7 +63,7 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
   const serverDisplayNames = useMemo(() => {
     const names: Record<string, string> = {};
     const counters: Record<string, number> = {};
-    streamOptions.forEach(option => {
+    streamOptions.forEach((option, index) => {
       const key = `${option.server}-${option.data_nume}`;
       if (serverCounts[option.server] > 1) {
         counters[option.server] = (counters[option.server] || 0) + 1;
@@ -92,7 +92,7 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
               allowFullScreen
               title="Video Player"
               className="h-full w-full rounded-md"
-              sandbox="allow-forms allow-scripts allow-same-origin"
+              sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation-by-user-activation"
             ></iframe>
           ) : (
             <div className="text-center text-muted-foreground">
