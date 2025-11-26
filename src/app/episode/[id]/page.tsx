@@ -34,7 +34,7 @@ export default async function EpisodePage({ params }: { params: { id: string } }
           </CardHeader>
           <CardContent>
             <Tabs defaultValue={episode.downloads[0]?.resolution || '720p'} className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 {episode.downloads.map(res => (
                    <TabsTrigger key={res.resolution} value={res.resolution}>{res.resolution}</TabsTrigger>
                 ))}
