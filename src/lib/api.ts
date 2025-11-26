@@ -1,13 +1,27 @@
+
 import type { HomeData, AnimeDetail, SeriesDetail, FilmDetail, EpisodeDetail, ServerData } from './types';
 
-// The external API is now called from our server-side proxy
 const API_BASE_URL = '/api/proxy';
+
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Client-side, use relative path
+    return '';
+  }
+  // Server-side, use absolute path
+  return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002';
+};
+
 
 async function fetchAPI<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}${path}`, {
+    const baseUrl = getBaseUrl();
+    const url = `${baseUrl}${API_BASE_URL}${path}`;
+    
+    const res = await fetch(url, {
       cache: 'no-store', 
     });
+
     if (!res.ok) {
       console.error(`API Error: ${res.status} ${res.statusText} for path ${path}`);
       return null;
@@ -15,7 +29,7 @@ async function fetchAPI<T>(path: string): Promise<T | null> {
     const json = await res.json();
     return json.data;
   } catch (error) {
-    console.error('Fetch API failed:', error);
+    console.error(`Fetch API failed for path ${path}:`, error);
     return null;
   }
 }
