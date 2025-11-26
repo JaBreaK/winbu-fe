@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import type { StreamOption } from '@/lib/types';
 import { getServerUrl } from '@/lib/api';
@@ -37,6 +37,17 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
       setIsLoading(false);
     }
   };
+
+  const uniqueStreamOptions = useMemo(() => {
+    const seenServers = new Set<string>();
+    return streamOptions.filter(option => {
+      if (seenServers.has(option.server)) {
+        return false;
+      }
+      seenServers.add(option.server);
+      return true;
+    });
+  }, [streamOptions]);
 
   return (
     <Card>
@@ -77,9 +88,9 @@ export function VideoPlayer({ streamOptions }: VideoPlayerProps) {
         <div className="space-y-2">
             <p className="font-semibold text-sm">Available Servers:</p>
             <div className="flex flex-wrap gap-2">
-            {streamOptions.map((option) => (
+            {uniqueStreamOptions.map((option) => (
                 <Button
-                key={option.data_nume}
+                key={`${option.server}-${option.data_nume}`}
                 onClick={() => handleServerClick(option)}
                 disabled={isLoading && selectedServer === option.server}
                 variant={selectedServer === option.server ? 'default' : 'secondary'}
