@@ -1,7 +1,7 @@
 import type { HomeData, AnimeDetail, SeriesDetail, FilmDetail, EpisodeDetail, ServerData } from './types';
 
 // In a real app, you would set this based on your environment
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9002';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://winbu-scrape.vercel.app';
 
 async function fetchAPI<T>(path: string): Promise<T | null> {
   try {
