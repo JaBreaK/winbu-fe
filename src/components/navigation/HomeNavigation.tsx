@@ -44,11 +44,10 @@ export function HomeNavigation() {
                     }
                 });
             },
-            // Root margin creates a "trigger line" near the top of the screen
-            // -80px: Ignore the top 80px (header height + buffer)
-            // -80%: Ignore the bottom 80% of the screen
-            // This ensures we only detect what's currently at the top
-            { threshold: 0, rootMargin: '-80px 0px -80% 0px' }
+            // Root margin to detect what's in the middle of the screen
+            // -45% from top and -45% from bottom leaves a 10% strip in the middle
+            // This is much more reliable than top-detection for "current section"
+            { threshold: 0, rootMargin: '-45% 0px -45% 0px' }
         );
 
         // Watch for DOM changes (in case sections load late)
