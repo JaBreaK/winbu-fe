@@ -73,12 +73,24 @@
     --input: 0 0% 12%;
     --ring: 0 100% 60%;
   }
-}
 
-/* Base Styles */
-@layer base {
-  * {
-    @apply border-border;
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  html,
+  body {
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
   body {
@@ -108,7 +120,6 @@
 /* Brutalism Utilities */
 @layer utilities {
 
-  /* Thick Border Styles */
   .brutal-border {
     border: 4px solid hsl(var(--foreground));
   }
@@ -184,10 +195,8 @@
   .brutal-btn-primary {
     @apply brutal-border-primary brutal-shadow-primary bg-primary text-primary-foreground;
   }
-}
 
-/* Parallax Utilities */
-@layer utilities {
+  /* Parallax Utilities */
   .parallax-slow {
     transform: translateZ(-1px) scale(2);
   }
@@ -215,10 +224,8 @@
   .animate-parallax-float {
     animation: parallax-float 6s ease-in-out infinite;
   }
-}
 
-/* Skeleton Loading */
-@layer utilities {
+  /* Skeleton Loading */
   .skeleton {
     @apply animate-pulse bg-muted;
   }
@@ -226,10 +233,8 @@
   .skeleton-brutal {
     @apply brutal-border bg-muted animate-pulse;
   }
-}
 
-/* Typography Utilities */
-@layer utilities {
+  /* Typography Utilities */
   .text-brutal {
     font-weight: 800;
     text-transform: uppercase;
