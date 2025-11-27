@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -24,12 +25,12 @@ export function EpisodeList({ episodes, initialShow = 10 }: EpisodeListProps) {
             <ul className="space-y-2 max-h-[400px] overflow-y-auto">
                 {displayedEpisodes.map((ep) => (
                     <li key={ep.id}>
-                        <a
+                        <Link
                             href={`/episode/${ep.id}`}
                             className="block rounded-md border p-2.5 hover:bg-muted/50 transition-colors text-sm"
                         >
                             {ep.title}
-                        </a>
+                        </Link>
                     </li>
                 ))}
             </ul>
